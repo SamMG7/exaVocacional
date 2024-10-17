@@ -156,17 +156,18 @@ session_start();
   <thead class="bg-info">
     <tr>
       <th scope="col">id</th>
-      <th scope="col">correo</th>
-      <th scope="col">clave</th>
-      <th scope="col">activo</th>
-      <th scope="col">tipoUsuario</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">edad</th>
+      <th scope="col">carrera de interes</th>
+      <th scope="col">Aplicador</th>
+      <th scope="col">fecha</th>
       <th scope="col"></th>
 
     </tr>
   </thead>
   <tbody>
     <?php
-    $sql = "SELECT * FROM usuarios";
+    $sql = "SELECT * FROM personas";
     if($resultado=mysqli_query($con, $sql)){
 
     
@@ -174,9 +175,11 @@ session_start();
       while($row = mysqli_fetch_assoc($resultado)){
         echo "<tr>";
                   echo "<td>" . $row['id'] . "</td>";
-                  echo "<td>" . $row['correo'] . "</td>";
-                  echo "<td>" . $row['clave'] . "</td>";
-                  echo "<td>" . $row['activo'] . "</td>";
+                  echo "<td>" . $row['nombre_completo'] . "</td>";
+                  echo "<td>" . $row['edad'] . "</td>";
+                  echo "<td>" . $row['carrera_interes'] . "</td>";
+                  echo "<td>" . $row['nombre_aplicador'] . "</td>";
+                  echo "<td>" . $row['fecha_registro'] . "</td>";
                   echo "<td>";
                   echo "<a href='modificar.php?id=" . $row['id'] . "'><i class='fas fa-edit'></i></a> ";
                   echo "<a href='eliminar.php?id=" . $row['id'] . "'><i class='fas fa-trash-alt'></i></a>";
