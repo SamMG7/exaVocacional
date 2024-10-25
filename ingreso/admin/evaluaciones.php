@@ -157,6 +157,7 @@ $msj = "";
       <th scope="col">Id Usuario</th>
       <th scope="col">CARRERA</th>
       <th scope="col">IdUsuario</th>
+      <th scope="col">Examen terminado</th>
       <th scope="col">Tiempo de examen</th>
       <th scope="col"></th>
 
@@ -178,7 +179,7 @@ $msj = "";
                   echo "<td>" . $row['examenCompleto'] . "</td>";
                   echo "<td>" . $row['tiempoReso'] . "</td>";
                   echo "<td>";
-                  echo "<a href='modificar.php?id=" . $row['idUsuario'] . "'><i class='fas fa-edit'></i></a> ";
+                  echo "<a href='descargarExamen.php?id=" . $row['idUsuario'] . "'><i class='fas fa-edit'></i></a> ";
                   echo "<a href='eliminar.php?id=" . $row['idUsuario'] . "'><i class='fas fa-trash-alt'></i></a>";
                 
 
