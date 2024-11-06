@@ -1,3 +1,39 @@
+<?php
+require_once 'conf.php';
+
+// Crear una nueva carrera
+if (isset($_POST['action']) && $_POST['action'] == 'create') {
+    $nombre = $_POST['nombreCarrera'];
+    $stmt = $pdo->prepare("INSERT INTO Carrera (nombreCarrera) VALUES (:nombre)");
+    $stmt->execute(['nombre' => $nombre]);
+    header("Location: carrera.php");
+    exit();
+}
+
+// Leer todas las carreras
+$stmt = $pdo->query("SELECT * FROM Carrera");
+$carreras = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Actualizar una carrera
+if (isset($_POST['action']) && $_POST['action'] == 'update') {
+    $id = $_POST['idCarrera'];
+    $nombre = $_POST['nombreCarrera'];
+    $stmt = $pdo->prepare("UPDATE Carrera SET nombreCarrera = :nombre WHERE idCarrera = :id");
+    $stmt->execute(['nombre' => $nombre, 'id' => $id]);
+    header("Location: carrera.php");
+    exit();
+}
+
+// Eliminar una carrera
+if (isset($_GET['delete'])) {
+    $id = $_GET['delete'];
+    $stmt = $pdo->prepare("DELETE FROM Carrera WHERE idCarrera = :id");
+    $stmt->execute(['id' => $id]);
+    header("Location: carrera.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
