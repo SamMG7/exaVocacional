@@ -1,24 +1,25 @@
 <?php
-require_once 'conf.php';
+include_once("../conf.php");
+include_once("../conf.php");
 
 // Crear una nueva carrera
 if (isset($_POST['action']) && $_POST['action'] == 'create') {
     $nombre = $_POST['nombreCarrera'];
-    $stmt = $pdo->prepare("INSERT INTO Carrera (nombreCarrera) VALUES (:nombre)");
+    $stmt = $pdo->prepare("INSERT INTO carrera (nombreCarrera) VALUES (:nombre)");
     $stmt->execute(['nombre' => $nombre]);
     header("Location: carrera.php");
     exit();
 }
 
 // Leer todas las carreras
-$stmt = $pdo->query("SELECT * FROM Carrera");
+$stmt = $pdo->query("SELECT * FROM carrera");
 $carreras = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Actualizar una carrera
 if (isset($_POST['action']) && $_POST['action'] == 'update') {
     $id = $_POST['idCarrera'];
     $nombre = $_POST['nombreCarrera'];
-    $stmt = $pdo->prepare("UPDATE Carrera SET nombreCarrera = :nombre WHERE idCarrera = :id");
+    $stmt = $pdo->prepare("UPDATE carrera SET nombreCarrera = :nombre WHERE idCarrera = :id");
     $stmt->execute(['nombre' => $nombre, 'id' => $id]);
     header("Location: carrera.php");
     exit();
@@ -27,7 +28,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'update') {
 // Eliminar una carrera
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
-    $stmt = $pdo->prepare("DELETE FROM Carrera WHERE idCarrera = :id");
+    $stmt = $pdo->prepare("DELETE FROM carrera WHERE idCarrera = :id");
     $stmt->execute(['id' => $id]);
     header("Location: carrera.php");
     exit();
@@ -73,7 +74,7 @@ if (isset($_GET['delete'])) {
     <!-- Formulario para actualizar carrera -->
     <?php if (isset($_GET['edit'])):
         $id = $_GET['edit'];
-        $stmt = $pdo->prepare("SELECT * FROM Carrera WHERE idCarrera = :id");
+        $stmt = $pdo->prepare("SELECT * FROM carrera WHERE idCarrera = :id");
         $stmt->execute(['id' => $id]);
         $carrera = $stmt->fetch(PDO::FETCH_ASSOC);
     ?>
