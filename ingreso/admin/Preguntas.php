@@ -1,11 +1,40 @@
 <?php
-include_once("../conf.php");
-include_once("../conf.php");
+  include_once("../conf.php");
 
-// Crear la conexión 
-$con = mysqli_connect($servidor, $usuario, $contrasena, $base_de_datos);
-$msj = "";
+  // Crear la conexión 
+  $con = mysqli_connect($servidor, $usuario, $contrasena, $base_de_datos);
 
+  /*Eliminar pregunta*/
+  if (isset($_GET['delete'])) {
+    $id = intval($_GET['delete']); 
+    // Verificar que la conexión a la base de datos esté establecida
+    if ($con) {
+      // Preparar la consulta para evitar inyección SQL
+      $stmt = $con->prepare("DELETE FROM preguntas WHERE idPregunta = ?");
+      // Verificar si la preparación de la consulta fue exitosa
+      if ($stmt) {
+        // Vincular el parámetro a la consulta
+        $stmt->bind_param("i", $id); // "i" indica que es un entero
+        // Ejecutar la consulta
+        if ($stmt->execute()) {
+          echo '<div>Pregunta eliminada correctamente</div>';
+          // Redireccionar a una página de confirmación o al listado principal
+          header("Location: Preguntas.php?");
+          exit();
+        } else {
+            echo '<div>Error al eliminar pregunta: ' . $stmt->error . '</div>';
+          }
+        // Cerrar la declaración preparada
+        $stmt->close();
+      } else {
+          echo '<div>Error al preparar la consulta: ' . $con->error . '</div>';
+        }
+      } else {
+          echo '<div>Error de conexión a la base de datos</div>';
+        }
+  } else {
+    echo '<div>ID no proporcionado</div>';
+    }
 ?>
 
 <!doctype html>
@@ -14,18 +43,14 @@ $msj = "";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
-    <meta name="author" content="0">
-    <title>Panel de control</title>
-
-    
+    <meta name="theme-color" content="#712cf9">
+    <title>Concentrado de preguntas</title>  
 
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Favicons -->
-<meta name="theme-color" content="#712cf9">
-
-
-    <style>
+    <link href="../css/navbars.css" rel="stylesheet">
+    
+  <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
         text-anchor: middle;
@@ -102,88 +127,77 @@ $msj = "";
       .bd-mode-toggle .dropdown-menu .active .bi {
         display: block !important;
       }
-    </style>
+  </style>  
+</head>
 
-    
-    <!-- Custom styles for this template -->
-    <link href="../css/navbars.css" rel="stylesheet">
-  </head>
-  <body>
- 
+<body>
+  <main>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+          <div class="container-fluid">
+              <a class="navbar-brand" href="#">Panel de control</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03">
+                  <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarsExample03">
+                  <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                      <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+                      <li class="nav-item"><a class="nav-link" href="evaluaciones.php">Evaluaciones</a></li>
+                      <li class="nav-item"><a class="nav-link" href="Preguntas.php">Preguntas</a></li>
+                      <li class="nav-item"><a class="nav-link" href="salir.php">Salir</a></li>
+                  </ul>
+              </div>
+          </div>
+      </nav>
 
-<main>
- 
-  <nav class="navbar navbar-expand-sm navbar-dark bg-dark" aria-label="Third navbar example">
-    <div class="container-fluid">
+    <div class="container mt-4">
+      <h1 class="mb-4">Concentrado de preguntas</h1>
+
+      <!-- Insertar pregunta -->
+      <form action="Pregunta.php" method="post" class="mb-4">
+          <input type="hidden" name="action" value="create">
+          <div class="row">
+              <div class="col-md-8">
+                  <input type="text" class="form-control" name="reactivo" placeholder="Nueva pregunta" required>
+                  <input type="number" class="form-control" name="escala" placeholder="Escala" required>
+                  <input type="text" class="form-control" name="seccion" placeholder="Sección" required>
+              </div>
+              <div class="col-md-4">
+                  <button type="submit" class="btn btn-primary w-100">Agregar Pregunta</button>
+              </div>
+          </div>
+      </form>
+  
+
+      <table class="table">
+        <thead class="bg-info">
+          <tr>
+            <th scope="col">Id pregunta</th>
+            <th scope="col">Reactivo</th>
+            <th scope="col">Escala</th>
+            <th scope="col">Sección</th>
+          </tr>
+        </thead>
       
-      <a class="navbar-brand" href="#">Panel de control</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarsExample03">
-        <ul class="navbar-nav me-auto mb-2 mb-sm-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="evaluaciones.php">Evaluaciones</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="examnen">Examen</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="salir.php">Salir</a>
-          </li>
-        </ul>
-        
-      </div>
+        <tbody>
+          <?php foreach ($pregunta as $preguntas): ?>
+            <tr>
+              <td><?php echo htmlspecialchars($preguntas['idPregunta']); ?></td>
+              <td><?php echo htmlspecialchars($preguntas['reactivo']); ?></td>
+              <td><?php echo htmlspecialchars($preguntas['escala']); ?></td>
+              <td><?php echo htmlspecialchars($preguntas['seccion']); ?></td>
+              <td>
+                <a href="#" class="btn btn-warning btn-sm">
+                  <i class='fas fa-edit'></i>
+                </a>
+                <a href="Preguntas.php?delete=<?php echo $carrera['idCarrera']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Está seguro de eliminar esta pregunta?');">
+                  <i class='fas fa-trash-alt'></i>
+                </a>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
     </div>
-  </nav>
-
-  <div>
-  <table class="table">
-  <thead class="bg-info">
-    <tr>
-      <th scope="col">Id pregunta</th>
-      <th scope="col">Reactivo</th>
-      <th scope="col">Escala</th>
-      <th scope="col">Sección</th>
-    </tr>
-  </thead>
-  <tbody>
-    <?php
-    $sql = "SELECT * FROM preguntas";
-    if($resultado=mysqli_query($con, $sql)){
-
-    
-    if(mysqli_num_rows($resultado) >0){
-      while($row = mysqli_fetch_assoc($resultado)){
-        echo "<tr>";
-                  echo "<td>" . $row['idPregunta'] . "</td>";
-                  echo "<td>" . $row['reactivo'] . "</td>";
-                  echo "<td>" . $row['escala'] . "</td>";
-                  echo "<td>" . $row['seccion'] . "</td>";
-                  echo "<td>
-                  <a href='editarPregunta.php?id=" . $row['idPregunta'] . "'><i class='fas fa-edit'></i></a> 
-                  <a href='eliminarPregunta.php?id=" . $row['idPregunta'] . "'><i class='fas fa-trash-alt'></i></a> 
-                  </td>";
-        echo "</tr>";
-      }
-    }else{
-      echo "<tr><td colspan=5>No hay registros</td></tr>";
-    }
-  }
-    ?>
-    
-  </tbody>
-</table>
-  </div>
+  </main>
+</body>
+</html>
