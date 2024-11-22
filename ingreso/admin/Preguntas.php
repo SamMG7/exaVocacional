@@ -22,7 +22,7 @@
         header("Location: Preguntas.php");
         exit();
     } else {
-        echo "Error al crear la carrera: " . $stmt->error;
+        echo "Error al guardar la pregunta: " . $stmt->error;
     }
     $stmt->close();
   }
@@ -175,7 +175,16 @@
               <div class="col-md-8">
                   <input type="text" class="form-control" name="reactivo" placeholder="Nueva pregunta" required>
                   <input type="number" class="form-control" name="escala" placeholder="Escala" required>
-                  <input type="text" class="form-control" name="seccion" placeholder="Sección" required>
+                  <select name="seccion" class="form-control" required>
+                    <option value="" disabled selected>Seleccione una opción</option>
+                    <option value="Preferencias">Prefe</option>
+                    <option value="Fisico-mate">FM</option>
+                    <option value="Biologica">B</option>
+                    <option value="Quimica">Q</option>
+                    <option value="Administrativa">A</option>
+                    <option value="Social">S</option>
+                    <option value="Humanidades">H</option>
+                  </select>
               </div>
               <br>
               <div class="col-md-4">
