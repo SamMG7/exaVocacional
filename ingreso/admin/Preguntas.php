@@ -4,37 +4,53 @@
   // Crear la conexión 
   $con = mysqli_connect($servidor, $usuario, $contrasena, $base_de_datos);
 
+  // Verificar que la conexión esté establecida
+  if (!$con) {
+    die("Error: No se pudo establecer la conexión con la base de datos. " . mysqli_connect_error());
+  }
+
+  /*Agregar una nueva pregunta*/
+  if (isset($_POST['action']) && $_POST['action'] === 'create') {
+    $reactivo = mysqli_real_escape_string($con, $_POST['reactivo']);
+    $escala = mysqli_real_escape_string($con, $_POST['escala']);
+    $seccion = mysqli_real_escape_string($con, $_POST['seccion']);
+
+    $stmt = $con->prepare("INSERT INTO preguntas (reactivo, escala, seccion) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $reactivo, $escala, $seccion);
+
+    if ($stmt->execute()) {
+        header("Location: Preguntas.php");
+        exit();
+    } else {
+        echo "Error al crear la carrera: " . $stmt->error;
+    }
+    $stmt->close();
+  }
+
+  /*Leer todas las preguntas*/
+  $query = "SELECT * FROM preguntas";
+  $result = mysqli_query($con, $query);
+
+  if ($result) {
+      $preguntas = mysqli_fetch_all($result, MYSQLI_ASSOC);
+      mysqli_free_result($result);
+  } else {
+      echo "Error al leer las preguntas: " . mysqli_error($con);
+  }
+
   /*Eliminar pregunta*/
   if (isset($_GET['delete'])) {
-    $id = intval($_GET['delete']); 
-    // Verificar que la conexión a la base de datos esté establecida
-    if ($con) {
-      // Preparar la consulta para evitar inyección SQL
-      $stmt = $con->prepare("DELETE FROM preguntas WHERE idPregunta = ?");
-      // Verificar si la preparación de la consulta fue exitosa
-      if ($stmt) {
-        // Vincular el parámetro a la consulta
-        $stmt->bind_param("i", $id); // "i" indica que es un entero
-        // Ejecutar la consulta
-        if ($stmt->execute()) {
-          echo '<div>Pregunta eliminada correctamente</div>';
-          // Redireccionar a una página de confirmación o al listado principal
-          header("Location: Preguntas.php?");
-          exit();
-        } else {
-            echo '<div>Error al eliminar pregunta: ' . $stmt->error . '</div>';
-          }
-        // Cerrar la declaración preparada
-        $stmt->close();
-      } else {
-          echo '<div>Error al preparar la consulta: ' . $con->error . '</div>';
-        }
-      } else {
-          echo '<div>Error de conexión a la base de datos</div>';
-        }
-  } else {
-    echo '<div>ID no proporcionado</div>';
+    $id = intval($_GET['delete']);
+    $stmt = $con->prepare("DELETE FROM preguntas WHERE idPregunta = ?");
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        header("Location: Preguntas.php");
+        exit();
+    } else {
+        echo "Error al eliminar la pregunta: " . $stmt->error;
     }
+    $stmt->close();
+}
 ?>
 
 <!doctype html>
@@ -161,13 +177,13 @@
                   <input type="number" class="form-control" name="escala" placeholder="Escala" required>
                   <input type="text" class="form-control" name="seccion" placeholder="Sección" required>
               </div>
+              <br>
               <div class="col-md-4">
                   <button type="submit" class="btn btn-primary w-100">Agregar Pregunta</button>
               </div>
           </div>
       </form>
   
-
       <table class="table">
         <thead class="bg-info">
           <tr>
@@ -179,17 +195,17 @@
         </thead>
       
         <tbody>
-          <?php foreach ($pregunta as $preguntas): ?>
+          <?php foreach ($preguntas as $pregunta): ?>
             <tr>
-              <td><?php echo htmlspecialchars($preguntas['idPregunta']); ?></td>
-              <td><?php echo htmlspecialchars($preguntas['reactivo']); ?></td>
-              <td><?php echo htmlspecialchars($preguntas['escala']); ?></td>
-              <td><?php echo htmlspecialchars($preguntas['seccion']); ?></td>
+              <td><?php echo htmlspecialchars($pregunta['idPregunta']); ?></td>
+              <td><?php echo htmlspecialchars($pregunta['reactivo']); ?></td>
+              <td><?php echo htmlspecialchars($pregunta['escala']); ?></td>
+              <td><?php echo htmlspecialchars($pregunta['seccion']); ?></td>
               <td>
                 <a href="#" class="btn btn-warning btn-sm">
                   <i class='fas fa-edit'></i>
                 </a>
-                <a href="Preguntas.php?delete=<?php echo $carrera['idCarrera']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Está seguro de eliminar esta pregunta?');">
+                <a href="Preguntas.php?delete=<?php echo $pregunta['idPregunta']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('¿Está seguro de eliminar esta pregunta?');">
                   <i class='fas fa-trash-alt'></i>
                 </a>
               </td>
