@@ -3,14 +3,14 @@
 include_once("../conf.php"); // Incluyendo el archivo de configuración o conexión a la base de datos
 
 $con = mysqli_connect($servidor, $usuario, $contrasena, $base_de_datos);
-if (!empty($_GET["id"])) {
+if (!empty($_GET["idPersona"])) {
     
-    $id = intval($_GET["id"]); 
+    $id = intval($_GET["idPersona"]); 
     
     // Verificar que la conexión a la base de datos esté establecida
     if ($con) {
         // Preparar la consulta para evitar inyección SQL
-        $stmt = $con->prepare("DELETE FROM usuarios WHERE id = ?");
+        $stmt = $con->prepare("DELETE FROM personas WHERE idPersona = ?");
         
         // Verificar si la preparación de la consulta fue exitosa
         if ($stmt) {
