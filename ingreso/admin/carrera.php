@@ -84,9 +84,11 @@ if (isset($_GET['delete'])) {
             </button>
             <div class="collapse navbar-collapse" id="navbarsExample03">
                 <ul class="navbar-nav me-auto mb-2 mb-sm-0">
-                    <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="header.php">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li>
                     <li class="nav-item"><a class="nav-link" href="evaluaciones.php">Evaluaciones</a></li>
                     <li class="nav-item"><a class="nav-link" href="Preguntas.php">Preguntas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="aplicadores.php">Aplicadores</a></li>
                     <li class="nav-item"><a class="nav-link" href="salir.php">Salir</a></li>
                 </ul>
             </div>
