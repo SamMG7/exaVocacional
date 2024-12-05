@@ -1,195 +1,154 @@
 <?php
+// Incluir la configuración y conectar con la base de datos
 include_once("../conf.php");
-include_once("../conf.php");
-
-// Crear la conexión 
 $con = mysqli_connect($servidor, $usuario, $contrasena, $base_de_datos);
 $msj = "";
 
+// Consultar usuarios (tabla personas)
+$usuarios = mysqli_query($con, "SELECT idPersona, nombre_completo FROM personas");
+
+// Consultar carreras
+$carreras = mysqli_query($con, "SELECT idCarrera, nombreCarrera FROM carrera");
 ?>
 
 <!doctype html>
-<html lang="es" data-bs-theme="auto">
-  <head>
+<html lang="es">
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="0">
-    <title>Panel de control</title>
-
-    
-
+    <title>Agregar Evaluación</title>
     <link rel="stylesheet" href="../css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Favicons -->
-<meta name="theme-color" content="#712cf9">
-
-
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-
-      .b-example-divider {
-        width: 100%;
-        height: 3rem;
-        background-color: rgba(0, 0, 0, .1);
-        border: solid rgba(0, 0, 0, .15);
-        border-width: 1px 0;
-        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-      }
-
-      .b-example-vr {
-        flex-shrink: 0;
-        width: 1.5rem;
-        height: 100vh;
-      }
-
-      .bi {
-        vertical-align: -.125em;
-        fill: currentColor;
-      }
-
-      .nav-scroller {
-        position: relative;
-        z-index: 2;
-        height: 2.75rem;
-        overflow-y: hidden;
-      }
-
-      .nav-scroller .nav {
-        display: flex;
-        flex-wrap: nowrap;
-        padding-bottom: 1rem;
-        margin-top: -1px;
-        overflow-x: auto;
-        text-align: center;
-        white-space: nowrap;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .btn-bd-primary {
-        --bd-violet-bg: #712cf9;
-        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
-
-        --bs-btn-font-weight: 600;
-        --bs-btn-color: var(--bs-white);
-        --bs-btn-bg: var(--bd-violet-bg);
-        --bs-btn-border-color: var(--bd-violet-bg);
-        --bs-btn-hover-color: var(--bs-white);
-        --bs-btn-hover-bg: #6528e0;
-        --bs-btn-hover-border-color: #6528e0;
-        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
-        --bs-btn-active-color: var(--bs-btn-hover-color);
-        --bs-btn-active-bg: #5a23c8;
-        --bs-btn-active-border-color: #5a23c8;
-      }
-
-      .bd-mode-toggle {
-        z-index: 1500;
-      }
-
-      .bd-mode-toggle .dropdown-menu .active .bi {
-        display: block !important;
-      }
-    </style>
-
-    
-    <!-- Custom styles for this template -->
-    <link href="../css/navbars.css" rel="stylesheet">
-  </head>
-  <body>
- 
-
+</head>
+<body>
 <main>
- 
-  <nav class="navbar navbar-expand-sm navbar-dark bg-dark" aria-label="Third navbar example">
-    <div class="container-fluid">
-      
-      <a class="navbar-brand" href="#">Panel de control</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Panel de control</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample03">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarsExample03">
+                <ul class="navbar-nav me-auto mb-2 mb-sm-0">
+                    <li class="nav-item"><a class="nav-link active" href="#">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="carrera.php">Carreras</a></li>
+                    <li class="nav-item"><a class="nav-link" href="usuarios.php">Usuarios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="evaluaciones.php">Evaluaciones</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Preguntas.php">Preguntas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="aplicadores.php">Aplicadores</a></li>
+                    <li class="nav-item"><a class="nav-link" href="salir.php">Salir</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-      <div class="collapse navbar-collapse" id="navbarsExample03">
-        <ul class="navbar-nav me-auto mb-2 mb-sm-0">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="evaluaciones.php">Evaluaciones</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="examnen">Examen</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="#">Action</a></li>
-              <li><a class="dropdown-item" href="#">Another action</a></li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="salir.php">Salir</a>
-          </li>
-        </ul>
-        
-      </div>
-    </div>
-  </nav>
 
-  <div>
-  <table class="table">
-  <thead class="bg-info">
-    <tr>
-      <th scope="col">id</th>
-      <th scope="col">Id Usuario</th>
-      <th scope="col">CARRERA</th>
-      <th scope="col">IdUsuario</th>
-      <th scope="col">Examen terminado</th>
-      <th scope="col">Tiempo de examen</th>
-      <th scope="col"></th>
+    <div class="container mt-4">
+        <!-- Botón para abrir el modal -->
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregarEvaluacion">Agregar Evaluación</button>
 
-    </tr>
-  </thead>
-  <tbody>
-    <?php
-    $sql = "SELECT * FROM evaluaciones";
-    if($resultado=mysqli_query($con, $sql)){
+        <!-- Modal -->
+        <div class="modal fade" id="modalAgregarEvaluacion" tabindex="-1" aria-labelledby="modalAgregarEvaluacionLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAgregarEvaluacionLabel">Nueva Evaluación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="guardar_evaluacion.php" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="idUsuario" class="form-label">Usuario</label>
+                                <select id="idUsuario" name="idUsuario" class="form-select" required>
+                                    <option value="">Seleccione un usuario</option>
+                                    <?php while ($usuario = mysqli_fetch_assoc($usuarios)) : ?>
+                                        <option value="<?= $usuario['idPersona'] ?>"><?= $usuario['nombre_completo'] ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="idCarrera" class="form-label">Carrera</label>
+                                <select id="idCarrera" name="idCarrera" class="form-select" required>
+                                    <option value="">Seleccione una carrera</option>
+                                    <?php while ($carrera = mysqli_fetch_assoc($carreras)) : ?>
+                                        <option value="<?= $carrera['idCarrera'] ?>"><?= $carrera['nombreCarrera'] ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="idExamen" class="form-label">Examen</label>
+                                <input type="text" id="idExamen" name="idExamen" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="fechaExamen" class="form-label">Fecha de asignación</label>
+                                <input type="datetime-local" id="fechaExamen" name="fechaExamen" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-    
-    if(mysqli_num_rows($resultado) >0){
-      while($row = mysqli_fetch_assoc($resultado)){
-        echo "<tr>";
-                  echo "<td>" . $row['idUsuario'] . "</td>";
-                  echo "<td>" . $row['idPersona'] . "</td>";
-                  echo "<td>" . $row['idCarrera'] . "</td>";
-                  echo "<td>" . $row['idUsuario'] . "</td>";
-                  echo "<td>" . $row['examenCompleto'] . "</td>";
-                  echo "<td>" . $row['tiempoReso'] . "</td>";
-                  echo "<td>";
-                  echo "<a href='descargarExamen.php?id=" . $row['idUsuario'] . "'><i class='fas fa-edit'></i></a> ";
-                  echo "<a href='eliminar.php?id=" . $row['idUsuario'] . "'><i class='fas fa-trash-alt'></i></a>";
-                
+        <!-- Tabla de evaluaciones -->
+        <!-- Tabla de evaluaciones -->
+<table class="table">
+    <thead class="bg-info">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Usuario</th>
+            <th scope="col">Carrera</th>
+            <th scope="col">Examen</th>
+            <th scope="col">Fecha de asignación</th>
+            <th scope="col">Examen terminado</th>
+            <th scope="col">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        // Nueva consulta con JOIN para obtener los nombres de usuario y carrera
+        $sql = "
+            SELECT 
+                e.idEvaluacion, 
+                p.nombre_completo, 
+                c.nombreCarrera, 
+                e.idExamen, 
+                e.fecha_examen, 
+                e.examenCompleto
+            FROM evaluaciones e
+            JOIN personas p ON e.idPersona = p.idPersona
+            JOIN carrera c ON e.idCarrera = c.idCarrera
+        ";
+        $resultado = mysqli_query($con, $sql);
 
-      }
-    }else{
-      echo "<tr><td colspan= '6>No hay usuarios</td></tr>";
-    }
-  }
-    ?>
-    
-  </tbody>
+        if (mysqli_num_rows($resultado) > 0) {
+            while ($row = mysqli_fetch_assoc($resultado)) {
+                echo "<tr>";
+                echo "<td>" . $row['idEvaluacion'] . "</td>";
+                echo "<td>" . $row['nombre_completo'] . "</td>";
+                echo "<td>" . $row['nombreCarrera'] . "</td>";
+                echo "<td>" . $row['idExamen'] . "</td>";
+                echo "<td>" . $row['fecha_examen'] . "</td>";
+                echo "<td>" . ($row['examenCompleto'] ? 'Sí' : 'No') . "</td>";
+                echo "<td>";
+                echo "<a href='descargarExamen.php?id=" . $row['idEvaluacion'] . "'><i class='fas fa-download'></i></a> ";
+                echo "<a href='eliminar_evaluacion.php?id=" . $row['idEvaluacion'] . "'><i class='fas fa-trash-alt'></i></a>";
+                echo "</td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='7'>No hay evaluaciones registradas</td></tr>";
+        }
+        ?>
+    </tbody>
 </table>
-  </div>
+ 
+    </div>
+</main>
+
+<script src="../js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
